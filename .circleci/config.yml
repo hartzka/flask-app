@@ -1,0 +1,9 @@
+version: 1.1
+orbs:
+  docker: circleci/docker@1.0.0
+workflows:
+  deploy:
+    jobs:
+      - docker/publish:
+          image: kaihartz/flask-app
+          tag: 'latest'
