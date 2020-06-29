@@ -14,4 +14,8 @@ def infopage():
 def hello():
     return "Hello"
 
+@app.route("/test")
+def test():
+    return "Test"
+
 app.run(host='0.0.0.0', port=5000)
