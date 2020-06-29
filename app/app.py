@@ -10,4 +10,8 @@ def index():
 def info():
     return "Infopage"
 
+@app.route("/hello")
+def info():
+    return "Hello"
+
 app.run(host='0.0.0.0', port=5000)

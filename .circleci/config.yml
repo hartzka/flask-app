@@ -5,5 +5,5 @@ workflows:
   deploy:
     jobs:
       - docker/publish:
-          image: 220698/flask-app
+          image: kaihartz/flask-app
           tag: 'latest'
