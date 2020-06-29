@@ -8,7 +8,7 @@ def index():
 
 @app.route("/info")
 def infopage():
-    return "Infopage"
+    return "Info page"
 
 @app.route("/hello")
 def hello():
