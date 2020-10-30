@@ -10,9 +10,9 @@ def index():
 def infopage():
     return "Info page"
 
-@app.route("/hello")
+@app.route("/weather")
 def hello():
-    return "Hello"
+    return "Weatherdata:"
 
 @app.route("/test")
 def test():
