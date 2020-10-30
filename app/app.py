@@ -1,11 +1,9 @@
 from flask import Flask, render_template
-import tablib
-import os
+import pandas as pd
 
 app = Flask(__name__, template_folder="templates")
-dataset = tablib.Dataset()
-with open(os.path.join(os.path.dirname(__file__),'data/weather.csv')) as f:
-    dataset.csv = f.read()
+df = pd.read_csv("data/weather.csv")
+dataset = df.to_html("detail.html")
 
 @app.route("/")
 def index():
