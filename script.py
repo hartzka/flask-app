@@ -23,6 +23,6 @@ del weather_data['Time zone']
 weather_data["Time"] = weather_data["Time"].astype(str).str.replace(":00","").astype(int)
 weather_data = weather_data.dropna(axis=0, subset=['Precipitation intensity (mm/h)', 'Air temperature (degC)', 'Gust speed (m/s)', 'Wind speed (m/s)'])
 
-data_folder = "./data"
+data_folder = "./app/data"
 destination=os.path.join(data_folder, "weather.csv")
 weather_data.to_csv(destination, index = False)

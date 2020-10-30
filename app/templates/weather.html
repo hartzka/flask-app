@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html >
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Weather data</title>
+  <meta charset="utf-8" />
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}"/>
+  <title>Weather</title>
 </head>
 <body>
-<p>data:</p>
+  <h2>Weather data</h2>
+  <div class="table">
+    {% block body %}
+    {{ data|safe }}
+    {% endblock %}  
+  </div>
 </body>
 </html>

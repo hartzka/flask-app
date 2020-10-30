@@ -1,6 +1,11 @@
 from flask import Flask, render_template
+import tablib
+import os
 
 app = Flask(__name__, template_folder="templates")
+dataset = tablib.Dataset()
+with open(os.path.join(os.path.dirname(__file__),'data/weather.csv')) as f:
+    dataset.csv = f.read()
 
 @app.route("/")
 def index():
@@ -12,7 +17,8 @@ def infopage():
 
 @app.route("/weather")
 def hello():
-    return render_template("weather.html")
+    data = dataset.html
+    return render_template("weather.html", data=data)
 
 @app.route("/test")
 def test():
