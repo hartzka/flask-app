@@ -30,6 +30,14 @@
     <button type="submit" class="button">Forecast weather</button>
   </form>
   <p>Day temperature on {{ date }}: {{ temperature }} °C</p>
-  <p>Current weather: {{ weather }}</p>
+  {% if prediction %} <p>Temperature prediction on {{ date }}: {{ prediction }} °C</p> {% endif %}
+  {% if weather %} 
+  <p>Current weather at {{weather.weather_station[0]}}:</p>
+    <ul>
+      {% for k, v in weather.items() %}
+      {% if v[0]|int(-99) != -99 %} <li>{{k}}: {{v[0]}} {{v[1]}}</li> {% endif %}
+      {% endfor %}
+    </ul>
+  {% endif %}
 </body>
 </html>
