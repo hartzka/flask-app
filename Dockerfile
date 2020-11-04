@@ -1,4 +1,4 @@
-FROM python:2.7-alpine
+FROM python:3.7-alpine
 
 
 WORKDIR /app
@@ -10,6 +10,6 @@ RUN pip install --upgrade pip \
 
 COPY /app .
 
-CMD ["python", "app.py"]
+CMD ["python3", "app.py"]
 
 
