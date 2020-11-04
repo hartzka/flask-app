@@ -20,6 +20,7 @@ obs = download_stored_query("fmi::observations::weather::multipointcoverage",
                                   "endtime=" + end_time])
 
 time_of_day = max(obs.data.keys())
+print(list(obs.data[time_of_day].keys()))
 weather_station = list(obs.data[time_of_day].keys())[0]
 
 data = obs.data[time_of_day][weather_station]
@@ -47,18 +48,14 @@ years = {2017, 2018, 2019}
 months = {1,2,3,4,5,6,7,8,9,10,11,12}
 days = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31}
 
-reg = linear_model.LinearRegression()
-reg.fit(df[["m","time","clouds","pressure","humidity","rain","snow","dew_temperature",
-            "visibility","wind_direction","gust_speed","wind_speed"]], df.temperature)
-
-def predict(row):
-    columns = ["m","time","clouds","pressure","humidity","rain","snow","dew_temperature",
-               "visibility","wind_direction","gust_speed","wind_speed"]
+def predict(row, columns):
+    reg = linear_model.LinearRegression()
+    reg.fit(df[columns], df.temperature)
     return reg.predict([[row[c].iloc[0] for c in columns]])
 
-def get_temperature_prediction(year, month, day):
+def get_temperature_prediction(year, month, day, columns):
     row = df.loc[(df["m"]==month) & (df["d"]==day) & (df["time"]==13) & (df["year"]==year)]
-    return round(predict(row)[0],1)
+    return round(predict(row, columns)[0],1)
 
 
 @app.route("/")
@@ -75,19 +72,41 @@ def weather():
 
 @app.route("/current")
 def current():
-    date = "{}.{}.{}".format(end_time[8:10], end_time[5:7], end_time[0:4])
-    return render_template("forecast.html", weather=current_weather, date=date, temperature=current_temperature, years=years, months=months, days=days)
+    date = {'day': end_time[8:10], 'month': end_time[5:7], 'year': end_time[0:4]}
+    dateformat = "{}.{}.{}".format(end_time[8:10], end_time[5:7], end_time[0:4])
+    return render_template("forecast.html", weather=current_weather, date=date, checks={}, dateformat=dateformat, temperature=current_temperature, years=years, months=months, days=days)
 
 @app.route("/forecast", methods=['POST'])
 def forecast():
-    inputs = [int(x) for x in request.form.values()]
-    year = inputs[0]
-    month = inputs[1]
-    day = inputs[2]
-    date = "{}.{}.{}".format(day, month, year)
+    year = int(request.form.get("year"))
+    month = int(request.form.get("month"))
+    day = int(request.form.get("day"))
+    columns = ["m", "time"]
+    if request.form.get("clouds"):
+        columns.append("clouds")
+    if request.form.get("dew"):
+        columns.append("dew_temperature")
+    if request.form.get("snow"):
+        columns.append("snow")
+    if request.form.get("rain"):
+        columns.append("rain")
+    if request.form.get("humidity"):
+        columns.append("humidity")
+    if request.form.get("pressure"):
+        columns.append("pressure")
+    if request.form.get("visibility"):
+        columns.append("visibility")
+    if request.form.get("wind_direction"):
+        columns.append("wind_direction")
+    if request.form.get("gust"):
+        columns.append("gust_speed")
+    if request.form.get("wind_speed"):
+        columns.append("wind_speed")
+    date = {'day': day, 'month': month, 'year': year}
+    dateformat = "{}.{}.{}".format(day, month, year)
     row = df.loc[(df["m"]==month) & (df["d"]==day) & (df["time"]==13) & (df["year"]==year)]
     temperature = row["temperature"].iloc[0]
-    prediction = get_temperature_prediction(year, month, day)
-    return render_template("forecast.html", date=date, temperature=temperature, prediction=prediction, years=years, months=months, days=days)
+    prediction = get_temperature_prediction(year, month, day, columns)
+    return render_template("forecast.html", date=date, dateformat=dateformat, checks=columns, temperature=temperature, prediction=prediction, years=years, months=months, days=days)
 
 app.run(host='0.0.0.0', port=5000, debug=True)

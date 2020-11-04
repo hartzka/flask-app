@@ -8,3 +8,7 @@
     left: 5%;
     margin: -100px 0 0 -150px;
 }
+
+body .body {
+    background-color: #dedede !important;
+}
