@@ -7,7 +7,7 @@ COPY requirements.txt .
 
 RUN pip install --upgrade pip \
 && pip install -r requirements.txt \
-&& apt-get install gfortran libopenblas-dev liblapack-dev \
+&& sudo apt-get install gfortran libopenblas-dev liblapack-dev \
 && pip install scikit-learn
 
 COPY /app .
