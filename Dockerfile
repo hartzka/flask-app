@@ -1,12 +1,10 @@
-FROM python:3.5-alpine
-
+FROM python-3.10.0a2-buster
 
 WORKDIR /app
 
 COPY requirements.txt .
 
 RUN pip install --upgrade pip \
-&& pip download scipy==1.3 \
 && pip install -r requirements.txt
 
 COPY /app .
