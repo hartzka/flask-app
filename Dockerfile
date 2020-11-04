@@ -5,7 +5,7 @@ WORKDIR /app
 COPY requirements.txt .
 
 RUN pip install --upgrade pip \
-&& pip install -U scikit-learn \
+&& apt-get install python3-sklearn python3-sklearn-lib python3-sklearn-doc \
 && pip install -r requirements.txt
 
 COPY /app .
