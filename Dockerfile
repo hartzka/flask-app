@@ -17,6 +17,6 @@ RUN set -xe \
 
 COPY /app .
 
-CMD ["python", "app.py"]
+CMD ["python3", "app.py"]
 
 
