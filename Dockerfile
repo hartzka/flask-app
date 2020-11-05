@@ -4,13 +4,14 @@ WORKDIR /app
 
 COPY requirements.txt .
 
-RUN apt-get update && apt-get install -y \
+RUN set -xe \
+&& apt-get update && apt-get install \
     python3 \
     python3-pip \
     gfortran \
     libopenblas-dev \
     liblapack-dev \
-&& pip install --upgrade pip \
+&& pip3 install --upgrade pip \
 && pip3 install -r requirements.txt \
 && pip3 install scikit-learn
 
