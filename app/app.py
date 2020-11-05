@@ -73,8 +73,8 @@ def weather():
 @app.route("/current")
 def current():
     date = {'day': end_time[8:10], 'month': end_time[5:7], 'year': end_time[0:4]}
-    #dateformat = "{}.{}.{}".format(end_time[8:10], end_time[5:7], end_time[0:4])
-    return render_template("forecast.html", weather=current_weather, date=date, checks={}, temperature=current_temperature, years=years, months=months, days=days)
+    dateformat = "{}.{}.{}".format(end_time[8:10], end_time[5:7], end_time[0:4])
+    return render_template("forecast.html", weather=current_weather, date=date, checks={}, dateformat=dateformat, temperature=current_temperature, years=years, months=months, days=days)
 
 @app.route("/forecast", methods=['POST'])
 def forecast():
@@ -103,10 +103,10 @@ def forecast():
     if request.form.get("wind_speed"):
         columns.append("wind_speed")
     date = {'day': day, 'month': month, 'year': year}
-    #dateformat = "{}.{}.{}".format(day, month, year)
+    dateformat = "{}.{}.{}".format(day, month, year)
     row = df.loc[(df["m"]==month) & (df["d"]==day) & (df["time"]==13) & (df["year"]==year)]
     temperature = row["temperature"].iloc[0]
     prediction = get_temperature_prediction(year, month, day, columns)
-    return render_template("forecast.html", date=date, checks=columns, temperature=temperature, prediction=prediction, years=years, months=months, days=days)
+    return render_template("forecast.html", date=date, dateformat=dateformat, checks=columns, temperature=temperature, prediction=prediction, years=years, months=months, days=days)
 
 app.run(host='0.0.0.0', port=5000, debug=True)
