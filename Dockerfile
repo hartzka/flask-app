@@ -12,8 +12,8 @@ RUN set -xe \
     libopenblas-dev \
     liblapack-dev \
 && python3 -m pip install --upgrade pip \
-&& pip3 install -r requirements.txt \
-&& pip3 install scikit-learn
+&& python3 -m pip install -r requirements.txt \
+&& python3 -m pip install scikit-learn
 
 COPY /app .
 
