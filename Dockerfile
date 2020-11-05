@@ -10,9 +10,9 @@ RUN apt-get update && apt-get install -y \
     gfortran \
     libopenblas-dev \
     liblapack-dev \
-&& pip install --upgrade pip \
-&& pip install -r requirements.txt \
-&& pip install scikit-learn
+&& pip3 install --upgrade pip \
+&& pip3 install -r requirements.txt \
+&& pip3 install scikit-learn
 
 COPY /app .
 
