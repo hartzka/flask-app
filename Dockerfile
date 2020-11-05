@@ -5,7 +5,7 @@ WORKDIR /app
 COPY requirements.txt .
 
 RUN set -xe \
-&& apt-get update && apt-get install \
+&& apt-get update && apt-get install -y \
     python3 \
     python3-pip \
     gfortran \
