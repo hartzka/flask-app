@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:16.10
 
 WORKDIR /app
 
@@ -6,7 +6,7 @@ COPY requirements.txt .
 
 RUN set -xe \
 && apt-get update && apt-get install -y \
-    python3 \
+    python3.6 \
     python3-pip \
     gfortran \
     libopenblas-dev \
