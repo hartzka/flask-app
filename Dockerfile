@@ -10,9 +10,9 @@ RUN apt-get update && apt-get install -y \
     libopenblas-dev \
     liblapack-dev
 
-RUN pip install --upgrade pip \
-&& pip install -r requirements.txt \
-&& pip install scikit-learn
+RUN python3-pip install --upgrade python3-pip \
+&& python3-pip install -r requirements.txt \
+&& python3-pip install scikit-learn
 
 COPY /app .
 
