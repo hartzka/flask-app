@@ -30,6 +30,12 @@ weather_data = weather_data.rename(columns = {"Cloud amount (1/8)":"clouds","Pre
 
 weather_data["time"] = weather_data["time"].astype(str).str.replace(":00","").astype(int)
 weather_data = weather_data.fillna(0)
+weather_data["temperature"] = weather_data["temperature"]*10
+weather_data["temperature"] = weather_data["temperature"].astype(int)
+weather_data["d"] = weather_data["m"]*100 + weather_data["d"]
+del weather_data["m"]
+weather_data["temperature"] = weather_data["temperature"].shift(-24)
+weather_data = weather_data[:-24]
 
 data_folder = "./app/data"
 destination=os.path.join(data_folder, "weather.csv")

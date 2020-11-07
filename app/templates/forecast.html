@@ -5,47 +5,34 @@
   <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}"/>
   <title>Weather</title>
 </head>
-<body class="body">
+<body class="body" style="background-color: aliceblue;">
   <h2>Weather data</h2>
-  <form action="{{ url_for('forecast')}}"method="post">
-    <div>
-      <label for="label1">Year:</label>
-      <select name = "year">
-      {% for y in years %}
-        <option {% if y==date.year %} selected="selected" {% endif %} value= "{{ y }}">{{ y }}</option>
-      {% endfor %}
-      </select>
-      <label for="label2">Month:</label>
-      <select name = "month">
-      {% for m in months %}
-        <option {% if m==date.month %} selected="selected" {% endif %} value= "{{ m }}">{{ m }}</option>
-      {% endfor %}
-      </select>
-      <label for="label3">Day:</label>
-      <select name = "day">
-      {% for d in days %}
-        <option {% if d==date.day %} selected="selected" {% endif %} value= "{{ d }}">{{ d }}</option>
-      {% endfor %}
-      </select>
-    </div>
+  <div style="border: 2px solid black;">
+  <form action="{{ url_for('forecast')}}"method="post" style="padding: 15px;">
+    <select name = "model">
+      <option {% if model=='linear' %} selected="selected" {% endif %} value= "linear">Linear regression</option>
+      <option {% if model=='trees' %} selected="selected" {% endif %} value= "trees">Decision trees</option>
+    </select>
     <p>Choose depending variables:</p>
     <table>
-    <tr><td>Clouds</td> <td><input type="checkbox" name="clouds" {% if "clouds" in checks %} checked {% endif %}/></td></tr>
-    <tr><td>Dew-point temperature</td><td><input type="checkbox" name="dew" {% if "dew_temperature" in checks %} checked {% endif %}/></td></tr>
-    <tr><td>Gust speed</td> <td><input type="checkbox" name="gust" {% if "gust_speed" in checks %} checked {% endif %}/></td></tr>
-    <tr><td>Wind speed</td> <td><input type="checkbox" name="wind_speed" {% if "wind_speed" in checks %} checked {% endif %}/></td></tr>
-    <tr><td>Wind direction</td> <td><input type="checkbox" name="wind_direction" {% if "wind_direction" in checks %} checked {% endif %}/></td></tr>
-    <tr><td>Humidity</td> <td><input type="checkbox" name="humidity" {% if "humidity" in checks %} checked {% endif %}/></td></tr>
-    <tr><td>Pressure</td> <td><input type="checkbox" name="pressure" {% if "pressure" in checks %} checked {% endif %}/></td></tr>
-    <tr><td>Visibility</td> <td><input type="checkbox" name="visibility" {% if "visibility" in checks %} checked {% endif %}/></td></tr>
-    <tr><td>Rain</td> <td><input type="checkbox" name="rain" {% if "rain" in checks %} checked {% endif %}/></td></tr>
-    <tr><td>Snow depth</td> <td><input type="checkbox" name="snow" {% if "snow" in checks %} checked {% endif %}/></td></tr>
+    {% if weather.clouds[0]|int(-99) != -99 %} <tr><td>Clouds</td> <td><input type="checkbox" name="clouds" {% if "clouds" in checks %} checked {% endif %}/></td></tr> {% endif %}
+    {% if weather.dew_temperature[0]|int(-99) != -99 %} <tr><td>Dew-point temperature</td><td><input type="checkbox" name="dew" {% if "dew_temperature" in checks %} checked {% endif %}/></td></tr> {% endif %}
+    {% if weather.gust_speed[0]|int(-99) != -99 %} <tr><td>Gust speed</td> <td><input type="checkbox" name="gust" {% if "gust_speed" in checks %} checked {% endif %}/></td></tr> {% endif %}
+    {% if weather.wind_speed[0]|int(-99) != -99 %} <tr><td>Wind speed</td> <td><input type="checkbox" name="wind_speed" {% if "wind_speed" in checks %} checked {% endif %}/></td></tr> {% endif %}
+    {% if weather.wind_direction[0]|int(-99) != -99 %} <tr><td>Wind direction</td> <td><input type="checkbox" name="wind_direction" {% if "wind_direction" in checks %} checked {% endif %}/></td></tr> {% endif %}
+    {% if weather.humidity[0]|int(-99) != -99 %} <tr><td>Humidity</td> <td><input type="checkbox" name="humidity" {% if "humidity" in checks %} checked {% endif %}/></td></tr> {% endif %}
+    {% if weather.pressure[0]|int(-99) != -99 %} <tr><td>Pressure</td> <td><input type="checkbox" name="pressure" {% if "pressure" in checks %} checked {% endif %}/></td></tr> {% endif %}
+    {% if weather.visibility[0]|int(-99) != -99 %} <tr><td>Visibility</td> <td><input type="checkbox" name="visibility" {% if "visibility" in checks %} checked {% endif %}/></td></tr> {% endif %}
+    {% if weather.rain[0]|int(-99) != -99 %} <tr><td>Rain</td> <td><input type="checkbox" name="rain" {% if "rain" in checks %} checked {% endif %}/></td></tr> {% endif %}
+    {% if weather.snow[0]|int(-99) != -99 %} <tr><td>Snow depth</td> <td><input type="checkbox" name="snow" {% if "snow" in checks %} checked {% endif %}/></td></tr> {% endif %}
     </table>
 
-    <button type="submit" class="button">Forecast weather</button>
+    <button type="submit" class="button">Forecast tomorrow's weather!</button>
   </form>
+
+  </div>
   <p>Day temperature on {{ dateformat }}: {{ temperature }} °C</p>
-  {% if prediction %} <p>Temperature prediction on {{ dateformat }}: {{ prediction }} °C</p> {% endif %}
+  {% if prediction %} <p>Temperature prediction for tomorrow: {{ prediction }} °C</p> {% endif %}
   {% if weather %} 
   <p>Current weather at {{weather.weather_station[0]}}:</p>
     <ul>
