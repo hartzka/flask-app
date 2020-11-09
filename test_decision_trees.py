@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn import metrics
 col_names = ["year","d","time","clouds","pressure","humidity","rain","snow","temperature",
 "dew_temperature","visibility","wind_direction","gust_speed","wind_speed","area"]
-weather_data = pd.read_csv("app/data/weather.csv", header=1, names=col_names)
+weather_data = pd.read_csv("app/data/weather_vantaa.csv", header=1, names=col_names)
 feature_cols=[1,2,3,4,5,6,7,9,10,11,12,13]
 X = weather_data.iloc[:,feature_cols]
 y = weather_data.temperature
@@ -15,4 +15,4 @@ classifier = classifier.fit(X_train,y_train)
 y_pred = classifier.predict(X_test)
 
 print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
-print("Prediction:", classifier.predict([[101,13,4.0,997.3,96.0,0.0,0.0,-1.9,19810.0,282.0,3.3,2.8]]))
+print("Prediction:", classifier.predict([[707,13,5.0,1000.0,77.0,0.0,-1.0,12.1,50000.0,11.0,5.7,4.2]]))

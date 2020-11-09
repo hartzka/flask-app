@@ -28,6 +28,12 @@
         <option {% if d==date.day %} selected="selected" {% endif %} value= "{{ d }}">{{ d }}</option>
       {% endfor %}
       </select>
+      <label for="label4">Weather station:</label>
+      <select name = "area">
+      {% for k, v in areas.items() %}
+        <option {% if v==area %} selected="selected" {% endif %} value= "{{ v }}">{{ k }}</option>
+      {% endfor %}
+      </select>
     </div>
     <br>
     <select name = "model">
@@ -52,13 +58,16 @@
   </form>
 
   </div>
+  {% if prediction %} 
   <p>Day temperature on {{ dateformat }}: {{ temperature }} °C</p>
-  {% if prediction %} <p>Temperature prediction on {{ dateformat }}: {{ prediction }} °C</p> {% endif %}
+  <p>Temperature prediction on {{ dateformat }}: {{ prediction }} °C</p>
+  {% endif %}
   {% if weather %} 
-  <p>Current weather at {{weather.weather_station[0]}}:</p>
+  <p>Weather at {{weather.weather_station[0]}}:</p>
+  <p>Observation time: {{dateformat}} {{weather.time [0]}}:{{weather.min[0]}}</p>
     <ul>
       {% for k, v in weather.items() %}
-      {% if v[0]|int(-99) != -99 %} <li>{{k}}: {{v[0]}} {{v[1]}}</li> {% endif %}
+      {% if v[0]|int(-99) != -99 and v[1] %} <li>{{k}}: {{v[0]}} {{v[1]}}</li> {% endif %}
       {% endfor %}
     </ul>
   {% endif %}

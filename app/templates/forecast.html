@@ -9,6 +9,13 @@
   <h2>Weather data</h2>
   <div style="border: 2px solid black;">
   <form action="{{ url_for('forecast')}}"method="post" style="padding: 15px;">
+    <label for="label1">Weather station:</label>
+      <select name = "area">
+      {% for k, v in areas.items() %}
+        <option {% if v==area %} selected="selected" {% endif %} value= "{{ v }}">{{ k }}</option>
+      {% endfor %}
+      </select>
+    <label for="label2">Model:</label>
     <select name = "model">
       <option {% if model=='linear' %} selected="selected" {% endif %} value= "linear">Linear regression</option>
       <option {% if model=='trees' %} selected="selected" {% endif %} value= "trees">Decision trees</option>
@@ -31,13 +38,14 @@
   </form>
 
   </div>
-  <p>Day temperature on {{ dateformat }}: {{ temperature }} °C</p>
-  {% if prediction %} <p>Temperature prediction for tomorrow: {{ prediction }} °C</p> {% endif %}
+  {% if prediction %}
+  <p>Temperature prediction for tomorrow: {{ prediction }} °C</p> 
+  {% endif %}
   {% if weather %} 
   <p>Current weather at {{weather.weather_station[0]}}:</p>
     <ul>
       {% for k, v in weather.items() %}
-      {% if v[0]|int(-99) != -99 %} <li>{{k}}: {{v[0]}} {{v[1]}}</li> {% endif %}
+      {% if v[0]|int(-99) != -99 and v[1]%} <li>{{k}}: {{v[0]}} {{v[1]}}</li> {% endif %}
       {% endfor %}
     </ul>
   {% endif %}
