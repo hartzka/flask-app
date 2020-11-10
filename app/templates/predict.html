@@ -6,7 +6,8 @@
   <title>Weather</title>
 </head>
 <body class="body" style="background-color: aliceblue;">
-  <h2>Weather data</h2>
+  <a href="{{ url_for('index') }}">Back</a>
+  <h2>Analyze weather data</h2>
   <div style="border: 2px solid black;">
   <form action="{{ url_for('predict')}}"method="post" style="padding: 15px;">
     <div>

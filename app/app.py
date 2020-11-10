@@ -9,45 +9,55 @@ from sklearn.model_selection import train_test_split
 
 app = Flask(__name__, template_folder="templates")
 
-start_time = datetime.datetime.utcnow() - datetime.timedelta(hours=1)
-end_time = datetime.datetime.utcnow() + datetime.timedelta(hours=3)
-start_time = start_time.isoformat(timespec="seconds") + "Z"
-end_time = end_time.isoformat(timespec="seconds") + "Z"
-obs = download_stored_query("fmi::observations::weather::multipointcoverage",
-                            args=["bbox=20,59,32,69", "timeseries=True",
-                                  "starttime=" + start_time,
-                                  "endtime=" + end_time])
-
 global weather_station
 global weather_data
 global current_weather
+global current_date
 
 weather_station = "Vantaa Helsinki-Vantaan lentoasema"
 
-data = obs.data[weather_station]
-rain = data["r_1h"]["values"][-1]
-current_temperature = data["t2m"]["values"][-1]
-gustSpeed = data["wg_10min"]["values"][-1]
-windSpeed = data["ws_10min"]["values"][-1]
-windDirection = data["wd_10min"]["values"][-1]
-humidity = data["rh"]["values"][-1]
-dew_temperature = data["td"]["values"][-1]
-rain_intensity = data["ri_10min"]["values"][-1]
-snow = data["snow_aws"]["values"][-1]
-pressure = data["p_sea"]["values"][-1]
-visibility = data["vis"]["values"][-1]
-clouds = data["n_man"]["values"][-1]
-latest_observation = data["times"][-1]
-latest_observation = latest_observation.isoformat(timespec="seconds") + "Z"
+def update_current_weather():
+    global weather_station
+    global weather_data
+    global current_weather
+    global current_date
 
-current_date = {"day": latest_observation[8:10], "month": latest_observation[5:7], "year": latest_observation[0:4], "time": latest_observation[11:13], "min": latest_observation[14:16]}
-current_weather = {"d": [str(int(current_date["month"])*100+int(current_date["day"]))], "time": [current_date["time"]], "min": [current_date["min"]],
-                   "rain":[rain, data["r_1h"]["unit"]], "temperature":[current_temperature, data["t2m"]["unit"]],
-                   "gust_speed":[gustSpeed, data["wg_10min"]["unit"]], "wind_speed":[windSpeed, data["ws_10min"]["unit"]],
-                   "weather_station": [weather_station], "wind_direction":[windDirection, data["wd_10min"]["unit"]], "humidity":[humidity,data["rh"]["unit"]],
-                   "dew_temperature": [dew_temperature, data["td"]["unit"]], "rain_intensity": [rain_intensity,data["ri_10min"]["unit"]],
-                   "snow": [snow, data["snow_aws"]["unit"]], "pressure": [pressure, data["p_sea"]["unit"]],
-                   "visibility": [visibility, data["vis"]["unit"]], "clouds": [clouds, data["n_man"]["unit"]]}
+    start_time = datetime.datetime.utcnow() - datetime.timedelta(hours=1)
+    end_time = datetime.datetime.utcnow() + datetime.timedelta(hours=3)
+    start_time = start_time.isoformat(timespec="seconds") + "Z"
+    end_time = end_time.isoformat(timespec="seconds") + "Z"
+    obs = download_stored_query("fmi::observations::weather::multipointcoverage",
+                                args=["bbox=20,59,32,71", "timeseries=True",
+                                    "starttime=" + start_time,
+                                    "endtime=" + end_time])
+        
+    data = obs.data[weather_station]
+    rain = data["r_1h"]["values"][-1]
+    current_temperature = data["t2m"]["values"][-1]
+    gustSpeed = data["wg_10min"]["values"][-1]
+    windSpeed = data["ws_10min"]["values"][-1]
+    windDirection = data["wd_10min"]["values"][-1]
+    humidity = data["rh"]["values"][-1]
+    dew_temperature = data["td"]["values"][-1]
+    rain_intensity = data["ri_10min"]["values"][-1]
+    snow = data["snow_aws"]["values"][-1]
+    pressure = data["p_sea"]["values"][-1]
+    visibility = data["vis"]["values"][-1]
+    clouds = data["n_man"]["values"][-1]
+    latest_observation = data["times"][-1]
+    latest_observation = latest_observation.isoformat(timespec="seconds") + "Z"
+
+    current_date = {"day": latest_observation[8:10], "month": latest_observation[5:7], "year": latest_observation[0:4], "time": latest_observation[11:13], "min": latest_observation[14:16]}
+    current_weather = {"d": [str(int(current_date["month"])*100+int(current_date["day"]))], "time": [current_date["time"]], "min": [current_date["min"]],
+                    "rain":[rain, data["r_1h"]["unit"]], "temperature":[current_temperature, data["t2m"]["unit"]],
+                    "gust_speed":[gustSpeed, data["wg_10min"]["unit"]], "wind_speed":[windSpeed, data["ws_10min"]["unit"]],
+                    "weather_station": [weather_station], "wind_direction":[windDirection, data["wd_10min"]["unit"]], "humidity":[humidity,data["rh"]["unit"]],
+                    "dew_temperature": [dew_temperature, data["td"]["unit"]], "rain_intensity": [rain_intensity,data["ri_10min"]["unit"]],
+                    "snow": [snow, data["snow_aws"]["unit"]], "pressure": [pressure, data["p_sea"]["unit"]],
+                    "visibility": [visibility, data["vis"]["unit"]], "clouds": [clouds, data["n_man"]["unit"]]}
+
+
+update_current_weather()
 
 years = [2016, 2017, 2018, 2019]
 months = [1,2,3,4,5,6,7,8,9,10,11,12]
@@ -68,7 +78,7 @@ def set_weather_data(area):
     else:
         weather_station = "Vantaa Helsinki-Vantaan lentoasema"
         path = "data/weather_vantaa.csv"
-    current_weather["weather_station"] = [weather_station]
+    update_current_weather()
     weather_data = pd.read_csv(os.path.join(os.path.dirname(__file__), path))
 
 set_weather_data('vantaa')
@@ -133,8 +143,7 @@ def weather():
 
 @app.route("/current")
 def current():
-    dateformat = "{}.{}.{}".format(end_time[8:10], end_time[5:7], end_time[0:4])
-    return render_template("predict.html", weather=current_weather, date=current_date, checks={}, dateformat=dateformat, temperature=current_temperature, years=years, months=months, days=days, areas=areas)
+    return render_template("predict.html", weather=current_weather, date=current_date, checks={}, temperature=current_weather["temperature"], years=years, months=months, days=days, areas=areas)
 
 @app.route("/predict", methods=['POST'])
 def predict():
@@ -207,7 +216,7 @@ def forecast():
     dateformat = "{}.{}.{}".format(current_date["day"], current_date["month"], current_date["year"])
     row = {c: int(current_weather[c][0]) for c in columns}
     prediction = forecast_temperature(row, columns, model)
-    return render_template("forecast.html", weather=current_weather, date=current_date, dateformat=dateformat, temperature=current_temperature,
+    return render_template("forecast.html", weather=current_weather, date=current_date, dateformat=dateformat, temperature=current_weather["temperature"],
                             model=model, checks=columns, prediction=prediction, years=years, months=months, days=days, area=area, areas=areas)
 
 app.run(host='0.0.0.0', port=5000, debug=True)
