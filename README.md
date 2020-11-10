@@ -1,4 +1,4 @@
-Simple containerized flask app that uses CircleCI.
+Weather analyzer and predictor that uses open data from [ilmatieteenlaitos](https://www.ilmatieteenlaitos.fi/havaintojen-lataus):
 
 [![CircleCI](https://circleci.com/gh/hartzka/flask-app.svg?style=shield)](https://app.circleci.com/pipelines/github/hartzka/flask-app)
 
