@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}"/>
+  <title>Weather</title>
+</head>
+<body class="body" style="background-color: aliceblue;">
+  <a href="{{ url_for('index') }}">Back</a>
+  <h2>Analyze weather data</h2>
+  <div>
+    <p>Weather data: Show raw weather data from Helsinki-Vantaa. Loading may take a while.</p>
+    <p>Analyze weather: Select month, day, year, weather station, model and depending variables. Predict day temperature based on those.
+        Actual temperature on that day and current weather observation data are also visible. Analyze how the selections affect the prediction and how good the prediction is.</p>
+    <p>Predict weather: Select weather station, model and depending variables. Predict temperature for tomorrow based on those.
+        Current weather observation data and average day/night temperatures are also visible.</p>
+  </div>
+  
+</body>
+</html>

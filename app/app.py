@@ -13,8 +13,10 @@ global weather_station
 global weather_data
 global current_weather
 global current_date
+global area
 
 weather_station = "Vantaa Helsinki-Vantaan lentoasema"
+area = "vantaa"
 
 def update_current_weather():
     global weather_station
@@ -64,16 +66,18 @@ months = [1,2,3,4,5,6,7,8,9,10,11,12]
 days = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
 areas = {"Helsinki-Vantaa lentoasema": "vantaa", "Helsinki Kumpula": "kumpula", "Oulu lentoasema": "oulu", "Utsjoki Kevo": "kevo"}
 
-def set_weather_data(area):
+def set_weather_data(a):
     global weather_station
     global weather_data
     global current_weather
+    global area
+    area = a
     path = "data/weather_{}.csv".format(area)
-    if (area ==  "kumpula"):
+    if (a ==  "kumpula"):
         weather_station = "Helsinki Kumpula"
-    elif (area ==  "oulu"):
+    elif (a ==  "oulu"):
         weather_station = "Oulu lentoasema"
-    elif (area ==  "kevo"):
+    elif (a ==  "kevo"):
         weather_station = "Utsjoki Kevo"
     else:
         weather_station = "Vantaa Helsinki-Vantaan lentoasema"
@@ -129,13 +133,22 @@ def forecast_temperature(row, columns, model):
     elif (model == "trees"):
         return round(forecast_decision_trees(row, columns)[0]/10,1)
 
+def calculate_average_temperature():
+    t1 = 0.0
+    t2 = 0.0
+    for y in years:
+        t1 = t1 + weather_data.loc[(weather_data["d"]==int(current_weather["d"][0])) & (weather_data["time"]==13) & (weather_data["year"]==y)]["temperature"].iloc[0]
+        t2 = t2 + weather_data.loc[(weather_data["d"]==int(current_weather["d"][0])) & (weather_data["time"]==4) & (weather_data["year"]==y)]["temperature"].iloc[0]
+
+    return {"day": round(t1/40, 1), "night": round(t2/40,1)}
+
 @app.route("/")
 def index():
     return render_template("index.html")
 
 @app.route("/info")
 def infopage():
-    return "Info page"
+    return render_template("info.html")
 
 @app.route("/weather")
 def weather():
@@ -143,7 +156,7 @@ def weather():
 
 @app.route("/current")
 def current():
-    return render_template("predict.html", weather=current_weather, date=current_date, checks={}, temperature=current_weather["temperature"], years=years, months=months, days=days, areas=areas)
+    return render_template("predict.html", weather=current_weather, date=current_date, checks={}, temperature=current_weather["temperature"], years=years, months=months, days=days, areas=areas, area=area)
 
 @app.route("/predict", methods=['POST'])
 def predict():
@@ -190,8 +203,9 @@ def predict():
 @app.route("/forecast", methods=['POST', 'GET'])
 def forecast():
     model = request.form.get("model")
-    area = request.form.get("area")
-    set_weather_data(area)
+    a = request.form.get("area")
+    if a != None:
+        set_weather_data(a)
     columns = ["d", "time"]
     if request.form.get("clouds"):
         columns.append("clouds")
@@ -215,8 +229,9 @@ def forecast():
         columns.append("wind_speed")
     dateformat = "{}.{}.{}".format(current_date["day"], current_date["month"], current_date["year"])
     row = {c: int(current_weather[c][0]) for c in columns}
+    average = calculate_average_temperature()
     prediction = forecast_temperature(row, columns, model)
     return render_template("forecast.html", weather=current_weather, date=current_date, dateformat=dateformat, temperature=current_weather["temperature"],
-                            model=model, checks=columns, prediction=prediction, years=years, months=months, days=days, area=area, areas=areas)
+                            model=model, checks=columns, prediction=prediction, years=years, months=months, days=days, area=area, areas=areas, average=average)
 
 app.run(host='0.0.0.0', port=5000, debug=True)

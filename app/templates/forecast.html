@@ -35,20 +35,23 @@
     {% if weather.snow[0]|int(-99) != -99 %} <tr><td>Snow depth</td> <td><input type="checkbox" name="snow" {% if "snow" in checks %} checked {% endif %}/></td></tr> {% endif %}
     </table>
 
-    <button type="submit" class="button">Forecast tomorrow's weather!</button>
+    <button type="submit" class="button">Forecast tomorrow's temperature!</button>
   </form>
 
   </div>
   {% if prediction %}
-  <p>Temperature prediction for tomorrow: {{ prediction }} °C</p> 
+  <p>Temperature prediction for tomorrow at {{weather.time[0]}}: {{ prediction }} °C</p> 
   {% endif %}
   {% if weather %} 
   <p>Current weather at {{weather.weather_station[0]}}:</p>
+  <p>Observation time: {{dateformat}} {{weather.time[0]}}:{{weather.min[0]}}</p>
     <ul>
       {% for k, v in weather.items() %}
       {% if v[0]|int(-99) != -99 and v[1]%} <li>{{k}}: {{v[0]}} {{v[1]}}</li> {% endif %}
       {% endfor %}
     </ul>
+  <p>Average day temperature today: {{average.day}} °C</p>
+  <p>Average night temperature today: {{average.night}} °C</p>
   {% endif %}
 </body>
 </html>
