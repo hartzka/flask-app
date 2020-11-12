@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn import linear_model
 
-df = pd.read_csv("app/data/weather.csv")
+df = pd.read_csv("app/data/weather_vantaa.csv")
 reg = linear_model.LinearRegression()
 columns = ["d","time","clouds","pressure","humidity","rain","snow","dew_temperature",
                "visibility","wind_direction","gust_speed","wind_speed"]
