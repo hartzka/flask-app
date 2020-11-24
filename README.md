@@ -4,6 +4,8 @@ Weather analyzer and predictor that uses open data from [ilmatieteenlaitos](http
 
 The project is running at heroku: https://flaskapp12121.herokuapp.com/
 
+Currently the free heroku dyno hours are used for November, so the application will be running again in December.
+
 How to run locally:
 run `python app/app.py` to start the application.
 The application should be running at `localhost:5000`
